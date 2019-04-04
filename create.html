@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+</head>
+<body>
+  <div class="result">
+
+  </div>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+    <!--
+    $(function(){
+      if (!PublicKeyCredential) {
+        /* Platform not capable. Handle error. */
+        toastr.warning("Platform not capable.", "Sorry");
+      } else {
+        toastr.success("Platform capable.");
+
+        // 登録のサンプル引数
+        var createCredentialDefaultArgs = {
+            publicKey: {
+                // Relying Party (a.k.a. - Service):
+                rp: {
+                    name: "Acme"
+                    // ID を設定したほうがよさそう？
+                },
+
+                // User:
+                user: {
+                    id: new Uint8Array(16),
+                    name: "john.p.smith@example.com",
+                    displayName: "John P. Smith"
+                },
+
+                pubKeyCredParams: [{
+                    type: "public-key",
+                    alg: -7
+                }],
+
+                attestation: "direct",
+
+                timeout: 60000,
+
+                challenge: new Uint8Array([ // サーバーから暗号学的にランダムな値が送られていなければならない
+                    0x8C, 0x0A, 0x26, 0xFF, 0x22, 0x91, 0xC1, 0xE9, 0xB9, 0x4E, 0x2E, 0x17, 0x1A, 0x98, 0x6A, 0x73,
+                    0x71, 0x9D, 0x43, 0x48, 0xD5, 0xA7, 0x6A, 0x15, 0x7E, 0x38, 0x94, 0x52, 0x77, 0x97, 0x0F, 0xEF
+                ]).buffer
+            }
+        };
+
+        // 新しい認証情報の作成/登録
+        navigator.credentials.create(createCredentialDefaultArgs)
+            .then((cred) => {
+                console.log("NEW CREDENTIAL", cred);
+                console.log("raw_id", cred.rawId);
+                $.ajax({
+                      url: 'http://localhost:5042/',
+                      type: 'POST',
+                      data: JSON.stringify({
+                        'raw_id': new Uint8Array(cred.rawId),
+                        'type': new Uint8Array(cred.type),
+                        'attestation': new Uint8Array(cred.response.attestationObject),
+                        'client_data': new Uint8Array(cred.response.clientDataJSON)
+                      }),
+                      contentType: 'application/json',
+                      dataType: "json",
+                  })
+                  // Ajaxリクエストが成功した時発動
+                  .done( (data) => {
+                      $('.result').html(data);
+                  })
+                  // Ajaxリクエストが失敗した時発動
+                  .fail( (data) => {
+                      $('.result').html(data);
+                  })
+                  // Ajaxリクエストが成功・失敗どちらでも発動
+                  .always( (data) => {
+
+                  });
+            })
+            .then((assertion) => {
+                console.log("ASSERTION", assertion);
+            })
+            .catch((err) => {
+                console.log("ERROR", err);
+            });
+      }
+    });
+    //-->
+  </script>
+</body>
+</html>

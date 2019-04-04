@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+</head>
+<body>
+  <div class="result">
+
+  </div>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+    <!--
+    function string_to_buffer(src) {
+      return (new Uint8Array([].map.call(src, function(c) {
+        return c.charCodeAt(0)
+      }))).buffer;
+    }
+    $(function(){
+      if (!PublicKeyCredential) {
+        /* Platform not capable. Handle error. */
+        toastr.warning("Platform not capable.", "Sorry");
+      } else {
+        toastr.success("Platform capable.");
+
+        // ログインのサンプル引数
+        var getCredentialDefaultArgs = {
+            publicKey: {
+                timeout: 60000,
+                // allowCredentials: [newCredential] // 下記参照
+                challenge: new Uint8Array([ // サーバーから暗号学的にランダムな値が送られていなければならない
+                    0x79, 0x50, 0x68, 0x71, 0xDA, 0xEE, 0xEE, 0xB9, 0x94, 0xC3, 0xC2, 0x15, 0x67, 0x65, 0x26, 0x22,
+                    0xE3, 0xF3, 0xAB, 0x3B, 0x78, 0x2E, 0xD5, 0x6F, 0x81, 0x26, 0xE2, 0xA6, 0x01, 0x7D, 0x74, 0x50
+                ]).buffer
+            },
+        };
+
+
+        getCredentialDefaultArgs.publicKey.allowCredentials = [{
+            id: string_to_buffer(atob('ADNqHI0kLVt_EE-hGxTCMoaJqWRjVxL9V22FJYw-Qd4R46-0EeX60qx3QixxMS7fgg0zJume5yI7upem0kir3CFgaZnRGJYnxl7XX4IAT-A8k3eQOiIO'.replace(/_/g, '/').replace(/-/g, '+'))),
+            type: "public-key"
+        }];
+        navigator.credentials.get(getCredentialDefaultArgs)
+        .then((cred) => {
+            console.log("CREDENTIAL", cred);
+            $.ajax({
+                  url: 'http://localhost:5042/',
+                  type: 'POST',
+                  data: JSON.stringify({
+                      'raw_id': new Uint8Array(cred.rawId),
+                      'type': new Uint8Array(cred.type),
+                      'client_data': new Uint8Array(cred.response.clientDataJSON),
+                      'authenticator_data': new Uint8Array(cred.response.authenticatorData),
+                      'signature': new Uint8Array(cred.response.signature),
+                      'user_handle': new Uint8Array(cred.response.userHandle)
+                  }),
+                  contentType: 'application/json',
+                  dataType: "json",
+              })
+              // Ajaxリクエストが成功した時発動
+              .done( (data) => {
+                  $('.result').html(data);
+              })
+              // Ajaxリクエストが失敗した時発動
+              .fail( (data) => {
+                  $('.result').html(data);
+              })
+              // Ajaxリクエストが成功・失敗どちらでも発動
+              .always( (data) => {
+
+              });
+            })
+            .then((assertion) => {
+                console.log("ASSERTION", assertion);
+            })
+            .catch((err) => {
+              console.log("ERROR", err);
+            });
+      }
+    });
+    //-->
+  </script>
+</body>
+</html>
